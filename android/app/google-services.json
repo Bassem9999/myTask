@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "256563294220",
+    "project_id": "weighttrackertask",
+    "storage_bucket": "weighttrackertask.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:256563294220:android:c14020b1a0244d311f3e29",
+        "android_client_info": {
+          "package_name": "com.bassem.weight_tracker_task"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "256563294220-18gh7l7abrmu2tkkmf4co2p7b8joavnq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1nDq_pfM03ag1QbSFkuwgKfS11zvs-XE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "256563294220-18gh7l7abrmu2tkkmf4co2p7b8joavnq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

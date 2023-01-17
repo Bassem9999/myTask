@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../controller/appCubit.dart';
-import '../controller/appStates.dart';
-import '../model/components.dart';
+import '../components.dart';
+import '../view_model/view_model.dart';
 import 'login.dart';
 
 class SignUpPage extends StatelessWidget {
-  const SignUpPage({Key? key}) : super(key: key);
-
+ SignUpPage({Key? key}) : super(key: key);
+  
+      AppViewModel viewModel = AppViewModel();
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AppCubit,AppStates>(
-      listener: (context, state) {},
-      builder: (context, state) {
-      var cubit = AppCubit.get(context);
-      return Scaffold(
-      appBar: AppBar(title: const Text("Town Market"),
+    return Scaffold(
+      appBar: AppBar(title: const Text("Weight Tracker"),
       centerTitle: true,
       automaticallyImplyLeading: false,
       ),
@@ -32,10 +27,10 @@ class SignUpPage extends StatelessWidget {
                   const Text("Create Account",style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
                   const SizedBox(height: 30,),
                    myTextField('Email',Icons.email_outlined ,const Icon(null),null,createemail,false,myvalEmail),
-                   myTextField('Password',Icons.lock_outline ,cubit.isvisible? const Icon(Icons.visibility_off):const Icon(Icons.visibility) ,cubit.visibility,createpassword,cubit.isvisible,myvalPassword),
-                   myTextField('ConfirmPassword',Icons.confirmation_number_outlined,cubit.isvisible? const Icon(Icons.visibility_off):const Icon(Icons.visibility) ,cubit.visibility,confirmpassword,cubit.isvisible,myvalConfirmPassword),
+                   myTextField('Password',Icons.lock_outline ,viewModel.isvisible? const Icon(Icons.visibility_off):const Icon(Icons.visibility) ,viewModel.visibility,createpassword,viewModel.isvisible,myvalPassword),
+                   myTextField('ConfirmPassword',Icons.confirmation_number_outlined,viewModel.isvisible? const Icon(Icons.visibility_off):const Icon(Icons.visibility) ,viewModel.visibility,confirmpassword,viewModel.isvisible,myvalConfirmPassword),
             
-                  ElevatedButton(onPressed:(){cubit.signUp(context);}, child:cubit.signupTap? Container( 
+                  ElevatedButton(onPressed:(){viewModel.signUp(context);}, child: viewModel.signupTap? Container( 
                     margin: const EdgeInsets.symmetric(horizontal: 122,vertical: 10),child: const CircularProgressIndicator(color: Colors.white,strokeWidth:4.5 ,)) : 
                    const Text("Create Account ",style: TextStyle(fontSize: 17),),
                   style: ElevatedButton.styleFrom(
@@ -48,7 +43,7 @@ class SignUpPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                          const Text("Already have Account? ",),
-                         TextButton(child:const Text("Login "),onPressed: (){myPushNavigator(context,const LoginPage());},),
+                         TextButton(child:const Text("Login "),onPressed: (){myPushNavigator(context, LoginPage());},),
                       ],
                     ),
                 ],
@@ -57,6 +52,6 @@ class SignUpPage extends StatelessWidget {
           )
         ],
       ),
-    );});
+    );
 }
 }

@@ -1,24 +1,33 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../model/components.dart';
+
+import '../components.dart';
 import '../view/home.dart';
-import 'appStates.dart';
 
-
-class AppCubit extends Cubit<AppStates>{
-  AppCubit() : super(NewsIntialState());
-
- static AppCubit get(context) => BlocProvider.of(context);
-
-bool loginTap = false; 
-bool signupTap = false;
-bool isvisible = true;
-
-  final _firestore = FirebaseFirestore.instance;
+final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
+
+ final dataProvider = StreamProvider<QuerySnapshot>(((ref) => getdata().asStream()));
+
+Future<QuerySnapshot>getdata()async{
+   var data = await _firestore.collection('weights').orderBy('time',descending: true).get();
+   return data;
+   }
+
+   final indexProvider = StateProvider<int>(((ref) => 0));
+
+ class AppViewModel{
+  
+  bool loginTap = false; 
+  bool signupTap = false;
+  bool isvisible = true;
+
+  String userEmail = loginemail.text;
+
+  
 
 showUpdatedialog(context,String text){
     return showDialog(context: context, builder: (context){
@@ -56,7 +65,6 @@ showUpdatedialog(context,String text){
 
     visibility(){
       isvisible = !isvisible;
-      emit(PasswordVisibilityState()); 
     }
 
 
@@ -66,17 +74,14 @@ showUpdatedialog(context,String text){
     currentData!.save();
     if(currentData.validate()){
       loginTap = true;
-      emit(LoginLoadingState());
     await _auth.signInWithEmailAndPassword(email: loginemail.text.trim(), password: loginpassword.text.trim()).then((value) {
       prefernces.setBool('login',true);
-      print(prefernces.getBool('login').toString());
-      myPushNavigator(context,HomeScreen());
+      prefernces.setString('email',loginemail.text);
+      myReplaceNavigator(context,HomePage());
        loginTap = false;
-      emit(LoginNotLoadingState());
       print("success");
     }).catchError((onError){
       loginTap = false;
-      emit(LoginNotLoadingState());
       print(onError.toString());
       showdialog(context,"Some thing went Wrong",null,Colors.black);
     });   
@@ -90,17 +95,14 @@ showUpdatedialog(context,String text){
     currentData!.save();
     if(currentData.validate()){
       signupTap = true;
-      emit(SignUpLoadingState());
     await _auth.createUserWithEmailAndPassword(email: createemail.text.trim(), password: createpassword.text.trim()).then((value) {
       prefernces.setBool('login',true);
       print(prefernces.getBool('login').toString());
-      myPushNavigator(context,HomeScreen());
+      myReplaceNavigator(context,HomePage());
       signupTap = false;
-      emit(SignUpNotLoadingState());
       print("success");
     }).catchError((onError){
       signupTap = false;
-      emit(SignUpNotLoadingState());
       print(onError.toString());
       showdialog(context, "Email not valid",null,Colors.white);
     });   
@@ -117,7 +119,6 @@ showUpdatedialog(context,String text){
     await _firestore.collection(collection).doc(p_name).set(mydata).then(((value) {
     weight.text = "";
     snackbar(context, "Item was Added successfully");
-    emit(AddtoCartState());
     }));
   }
 
@@ -126,7 +127,6 @@ showUpdatedialog(context,String text){
     Navigator.pop(context);
     snackbar(context, "Item was Updated successfully");
     update.text = "";
-    emit(UpdateWeightState());
     });
     
   }
@@ -134,7 +134,6 @@ showUpdatedialog(context,String text){
    deleteWeight(context,String document)async{
     await _firestore.collection('weights').doc(document).delete().then((value) {
       snackbar(context, "Item was Deleted successfully");
-      emit(DeleteWeightState());
       print("success");
     });
     
@@ -185,5 +184,4 @@ String? myvalConfirmPassword(text){
      }
   
 }
-
 }
